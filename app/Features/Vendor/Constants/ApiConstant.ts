@@ -1,0 +1,1 @@
+export const SIGN_UP_API_ENDPOINT = 'vendor/auth/signup';

@@ -1,23 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { VendorData } from '../Interface/VendorData';
+import { SIGN_UP_CONSTANT } from '../Constants/SignUpActionConstants';
+import { registerVendorAPI } from '../APIs/SignUpApis';
 
 export const registerVendor = createAsyncThunk(
-  'vendor/registerVendor',
+  SIGN_UP_CONSTANT,
   async (vendorData: VendorData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/vendor/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(vendorData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Registration failed');
-      }
-
-      const data = await response.json();
-      return data.vendor;
+      const data = await registerVendorAPI(vendorData);
+      return data.vendor || data; // Return vendor data from API response
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Registration failed');
     }

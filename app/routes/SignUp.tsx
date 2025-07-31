@@ -9,15 +9,28 @@ const Register = () => {
     const { registrationLoading, registrationError } = useAppSelector(state => state.userData);
     
     const [formData, setFormData] = useState({
+        emailId: "",
+        password: "",
         vendorFirstName: "",
         vendorLastName: "",
-        email: "",
-        password: "",
         companyName: "",
-        cin: "",
+        CIN: "",
         registrationNumber: "",
-        dateOfIncorporation: ""
+        dateOfIncorporation: "",
+        userEmailId: "",
+        userFirstName: "",
+        userLastName: "",
+        employeeId: "",
+        designation: ""
     });
+
+    const onEmailIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, emailId: event.target.value });
+    };
+
+    const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, password: event.target.value });
+    };
 
     const onVendorFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, vendorFirstName: event.target.value });
@@ -27,20 +40,12 @@ const Register = () => {
         setFormData({ ...formData, vendorLastName: event.target.value });
     };
 
-    const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, email: event.target.value });
-    };
-
-    const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, password: event.target.value });
-    };
-
     const onCompanyNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, companyName: event.target.value });
     };
 
-    const onCinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, cin: event.target.value });
+    const onCINChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, CIN: event.target.value });
     };
 
     const onRegistrationNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,12 +56,39 @@ const Register = () => {
         setFormData({ ...formData, dateOfIncorporation: event.target.value });
     };
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        dispatch(registerVendor(formData));
+    const onUserEmailIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, userEmailId: event.target.value });
     };
 
-    // console.log('------ rendering ---- ', formData);
+    const onUserFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, userFirstName: event.target.value });
+    };
+
+    const onUserLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, userLastName: event.target.value });
+    };
+
+    const onEmployeeIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, employeeId: event.target.value });
+    };
+
+    const onDesignationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, designation: event.target.value });
+    };
+
+    const handleSubmit = (event: React.FormEvent) => {
+        console.log('--- submit called with data:', formData);
+        event.preventDefault();
+        
+        // Convert registrationNumber and employeeId to numbers
+        const submitData = {
+            ...formData,
+            registrationNumber: parseInt(formData.registrationNumber),
+            employeeId: parseInt(formData.employeeId)
+        };
+        
+        dispatch(registerVendor(submitData));
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen p-4 bg-gray-50">
@@ -80,38 +112,15 @@ const Register = () => {
                     onSubmit={handleSubmit}
                 >
                     <TextField 
-                        id="vendorFirstName" 
-                            name="vendorFirstName"
-                            label="Vendor First Name" 
-                            variant="filled" 
-                            fullWidth
-                            required
-                            value={formData.vendorFirstName}
-                            onChange={onVendorFirstNameChange}
-                            disabled={registrationLoading}
-                        />
-                    <TextField 
-                        id="vendorLastName" 
-                        name="vendorLastName"
-                        label="Vendor Last Name" 
-                        variant="filled" 
-                        fullWidth
-                        required
-                        value={formData.vendorLastName}
-                        onChange={onVendorLastNameChange}
-                        disabled={registrationLoading}
-                    />
-
-                    <TextField 
-                        id="email" 
-                        name="email"
-                        label="Email" 
+                        id="emailId" 
+                        name="emailId"
+                        label="Email ID" 
                         type="email"
                         variant="filled" 
                         fullWidth
                         required
-                        value={formData.email}
-                        onChange={onEmailChange}
+                        value={formData.emailId}
+                        onChange={onEmailIdChange}
                         disabled={registrationLoading}
                     />
 
@@ -129,6 +138,30 @@ const Register = () => {
                     />
 
                     <TextField 
+                        id="vendorFirstName" 
+                        name="vendorFirstName"
+                        label="Vendor First Name" 
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.vendorFirstName}
+                        onChange={onVendorFirstNameChange}
+                        disabled={registrationLoading}
+                    />
+
+                    <TextField 
+                        id="vendorLastName" 
+                        name="vendorLastName"
+                        label="Vendor Last Name" 
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.vendorLastName}
+                        onChange={onVendorLastNameChange}
+                        disabled={registrationLoading}
+                    />
+
+                    <TextField 
                         id="companyName" 
                         name="companyName"
                         label="Company Name" 
@@ -141,14 +174,14 @@ const Register = () => {
                     />
                     
                     <TextField 
-                        id="cin" 
-                        name="cin"
+                        id="CIN" 
+                        name="CIN"
                         label="CIN" 
                         variant="filled" 
                         fullWidth
                         required
-                        value={formData.cin}
-                        onChange={onCinChange}
+                        value={formData.CIN}
+                        onChange={onCINChange}
                         disabled={registrationLoading}
                     />
                     
@@ -156,6 +189,7 @@ const Register = () => {
                         id="registrationNumber" 
                         name="registrationNumber"
                         label="Registration Number" 
+                        type="number"
                         variant="filled" 
                         fullWidth
                         required
@@ -178,6 +212,68 @@ const Register = () => {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                    />
+
+                    <TextField 
+                        id="userEmailId" 
+                        name="userEmailId"
+                        label="User Email ID" 
+                        type="email"
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.userEmailId}
+                        onChange={onUserEmailIdChange}
+                        disabled={registrationLoading}
+                    />
+
+                    <TextField 
+                        id="userFirstName" 
+                        name="userFirstName"
+                        label="User First Name" 
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.userFirstName}
+                        onChange={onUserFirstNameChange}
+                        disabled={registrationLoading}
+                    />
+
+                    <TextField 
+                        id="userLastName" 
+                        name="userLastName"
+                        label="User Last Name" 
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.userLastName}
+                        onChange={onUserLastNameChange}
+                        disabled={registrationLoading}
+                    />
+
+                    <TextField 
+                        id="employeeId" 
+                        name="employeeId"
+                        label="Employee ID" 
+                        type="number"
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.employeeId}
+                        onChange={onEmployeeIdChange}
+                        disabled={registrationLoading}
+                    />
+
+                    <TextField 
+                        id="designation" 
+                        name="designation"
+                        label="Designation" 
+                        variant="filled" 
+                        fullWidth
+                        required
+                        value={formData.designation}
+                        onChange={onDesignationChange}
+                        disabled={registrationLoading}
                     />
 
                     <Box sx={{ pt: 2 }}>

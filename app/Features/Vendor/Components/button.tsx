@@ -1,13 +1,24 @@
 import Button from '@mui/material/Button';
 
-const ButtonComponent= (props: any) => {
-    console.log("Login page loaded");
-  return (
-    <div>
-        {/* <button onClick={props.onClick}>{props.name}</button> */}
-        <Button variant="contained" onClick={props.onClick}>{props.name}</Button>
-    </div>
-  )
+interface ButtonProps {
+  name: string;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
+
+const ButtonComponent = (props: any) => {
+  return (
+    <Button 
+      variant="contained" 
+      onClick={props.onClick}
+      type={props.type}
+      disabled={props.disabled}
+      fullWidth
+    >
+      {props.name}
+    </Button>
+  );
+};
 
 export default ButtonComponent;

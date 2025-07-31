@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { registerVendor } from "../Actions/VendorSignUpAction";
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type { VendorState } from '../Interface/VendorState';
+import type { VendorData } from '../Interface/VendorData';
 
 const initialState: VendorState = {
   vendorData: null,
