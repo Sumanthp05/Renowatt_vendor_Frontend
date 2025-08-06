@@ -6,11 +6,25 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { store } from './Configurations/Store';
+import { initializeAuth } from './Features/Vendor/SignIn/Reducers/SignInReducer';
 
 import type { Route } from "./+types/root";
 import "./app.css";
+
+// Component to initialize authentication state
+function AuthInitializer() {
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    // Initialize authentication state from localStorage on app start
+    dispatch(initializeAuth());
+  }, [dispatch]);
+  
+  return null;
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -46,6 +60,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Provider store={store}>
+      <AuthInitializer />
       <Outlet />
     </Provider>
   );

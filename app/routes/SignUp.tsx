@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Box } from "@mui/material";
 import Button from "~/Features/Vendor/Components/button";
-import { useAppDispatch, useAppSelector } from "~/Configurations/Store";
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from '~/Configurations/Store';
 import { registerVendor } from "../Features/Vendor/Actions/VendorSignUpAction";
+import { clearRegistrationSuccess } from "../Features/Vendor/Reducers/SignUpReducer";
+import { initializeAuth } from "../Features/Vendor/SignIn/Reducers/SignInReducer";
 
-const Register = () => {
-    const dispatch = useAppDispatch();
-    const { registrationLoading, registrationError } = useAppSelector(state => state.userData);
+const SignUp = () => {
+    const dispatch = useDispatch();
+    const { registrationLoading, registrationError, registrationSuccessful } = useSelector((state: RootState) => state.userData);
     
     const [formData, setFormData] = useState({
         emailId: "",
@@ -23,6 +26,28 @@ const Register = () => {
         employeeId: "",
         designation: ""
     });
+
+    // Redirect to home after successful registration
+    useEffect(() => {
+        // Only redirect when registration was just completed successfully
+        if (registrationSuccessful && !registrationLoading && !registrationError) {
+            // Also update the SignIn authentication state since user just registered
+            dispatch(initializeAuth());
+            console.log('Registration successful, redirecting to home page...');
+            setTimeout(() => {
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/';
+                }
+            }, 2000); // 2 second delay to show success
+        }
+    }, [registrationSuccessful, registrationLoading, registrationError, dispatch]);
+
+    // Clear success flag when component unmounts or user navigates away
+    useEffect(() => {
+        return () => {
+            dispatch(clearRegistrationSuccess());
+        };
+    }, [dispatch]);
 
     const onEmailIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, emailId: event.target.value });
@@ -87,7 +112,7 @@ const Register = () => {
             employeeId: parseInt(formData.employeeId)
         };
         
-        dispatch(registerVendor(submitData));
+        dispatch(registerVendor(submitData) as any);
     };
 
     return (
@@ -99,6 +124,12 @@ const Register = () => {
                 {registrationError && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                         {registrationError}
+                    </div>
+                )}
+                
+                {registrationSuccessful && !registrationLoading && !registrationError && (
+                    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                        Registration successful! Redirecting to home page...
                     </div>
                 )}
                 
@@ -284,10 +315,10 @@ const Register = () => {
                         />
                     </Box>
                 </Box>
-                <p className="text-center text-sm text-gray-600">Already have an account? <a href="/login" className="text-green-600 hover:underline">Login here</a>.</p>
+                <p className="text-center text-sm text-gray-600">Already have an account? <a href="/SignIn" className="text-green-600 hover:underline">Sign in here</a>.</p>
             </div>
         </div>
     );
 };
 
-export default Register;
+export default SignUp;
